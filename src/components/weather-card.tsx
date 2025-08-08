@@ -1,6 +1,6 @@
 "use client";
 
-import { Sun, Cloud, CloudRain, Droplets, Wind, Leaf, Mountain, Sparkles } from "lucide-react";
+import { Sun, Cloud, CloudRain, Droplets, Wind, Leaf, Mountain, Sparkles, Cloudy, Moon,CloudyIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
@@ -10,22 +10,23 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 
 
 export interface WeatherData {
-  location: string;
-  temperature: number;
-  condition: "Sunny" | "Cloudy" | "Rainy";
-  humidity: number;
-  windSpeed: number;
-  aqi: number;
-  pollutants: {
-    pm25: number;
-    pm10: number;
-    no2: number;
-  };
-  forecast: {
-    day: string;
-    temp: number;
-    condition: "Sunny" | "Cloudy" | "Rainy";
-  }[];
+    location: string;
+    temperature: number;
+    condition: string;
+    isDay: boolean;
+    humidity: number;
+    windSpeed: number;
+    aqi: number;
+    pollutants: {
+      pm25: number;
+      pm10: number;
+      no2: number;
+    };
+    forecast: {
+      day: string;
+      temp: number;
+      condition: string;
+    }[];
 }
 
 interface WeatherCardProps {
@@ -33,15 +34,61 @@ interface WeatherCardProps {
   isLoading: boolean;
 }
 
-const weatherIcons: { [key in WeatherData['condition']]: React.ReactNode } = {
-  Sunny: <Sun className="h-10 w-10 text-secondary-foreground" />,
-  Cloudy: <Cloud className="h-10 w-10 text-muted-foreground" />,
-  Rainy: <CloudRain className="h-10 w-10 text-primary" />,
+const weatherIcons: { [key: string]: React.ReactNode } = {
+  "Sunny": <Sun className="h-10 w-10 text-secondary-foreground" />,
+  "Clear": <Moon className="h-10 w-10 text-muted-foreground" />,
+  "Partly cloudy": <Cloud className="h-10 w-10 text-muted-foreground" />,
+  "Cloudy": <CloudyIcon className="h-10 w-10 text-muted-foreground" />,
+  "Overcast": <Cloud className="h-10 w-10 text-muted-foreground" />,
+  "Mist": <Cloud className="h-10 w-10 text-muted-foreground" />,
+  "Patchy rain possible": <CloudRain className="h-10 w-10 text-primary" />,
+  "Patchy snow possible": <CloudRain className="h-10 w-10 text-primary" />,
+  "Patchy sleet possible": <CloudRain className="h-10 w-10 text-primary" />,
+  "Patchy freezing drizzle possible": <CloudRain className="h-10 w-10 text-primary" />,
+  "Thundery outbreaks possible": <CloudRain className="h-10 w-10 text-primary" />,
+  "Blowing snow": <CloudRain className="h-10 w-10 text-primary" />,
+  "Blizzard": <CloudRain className="h-10 w-10 text-primary" />,
+  "Fog": <Cloud className="h-10 w-10 text-muted-foreground" />,
+  "Freezing fog": <Cloud className="h-10 w-10 text-muted-foreground" />,
+  "Patchy light drizzle": <CloudRain className="h-10 w-10 text-primary" />,
+  "Light drizzle": <CloudRain className="h-10 w-10 text-primary" />,
+  "Freezing drizzle": <CloudRain className="h-10 w-10 text-primary" />,
+  "Heavy freezing drizzle": <CloudRain className="h-10 w-10 text-primary" />,
+  "Patchy light rain": <CloudRain className="h-10 w-10 text-primary" />,
+  "Light rain": <CloudRain className="h-10 w-10 text-primary" />,
+  "Moderate rain at times": <CloudRain className="h-10 w-10 text-primary" />,
+  "Moderate rain": <CloudRain className="h-10 w-10 text-primary" />,
+  "Heavy rain at times": <CloudRain className="h-10 w-10 text-primary" />,
+  "Heavy rain": <CloudRain className="h-10 w-10 text-primary" />,
+  "Light freezing rain": <CloudRain className="h-10 w-10 text-primary" />,
+  "Moderate or heavy freezing rain": <CloudRain className="h-10 w-10 text-primary" />,
+  "Light sleet": <CloudRain className="h-10 w-10 text-primary" />,
+  "Moderate or heavy sleet": <CloudRain className="h-10 w-10 text-primary" />,
+  "Patchy light snow": <CloudRain className="h-10 w-10 text-primary" />,
+  "Light snow": <CloudRain className="h-10 w-10 text-primary" />,
+  "Patchy moderate snow": <CloudRain className="h-10 w-10 text-primary" />,
+  "Moderate snow": <CloudRain className="h-10 w-10 text-primary" />,
+  "Patchy heavy snow": <CloudRain className="h-10 w-10 text-primary" />,
+  "Heavy snow": <CloudRain className="h-10 w-10 text-primary" />,
+  "Ice pellets": <CloudRain className="h-10 w-10 text-primary" />,
+  "Light rain shower": <CloudRain className="h-10 w-10 text-primary" />,
+  "Moderate or heavy rain shower": <CloudRain className="h-10 w-10 text-primary" />,
+  "Torrential rain shower": <CloudRain className="h-10 w-10 text-primary" />,
+  "Light sleet showers": <CloudRain className="h-10 w-10 text-primary" />,
+  "Moderate or heavy sleet showers": <CloudRain className="h-10 w-10 text-primary" />,
+  "Light snow showers": <CloudRain className="h-10 w-10 text-primary" />,
+  "Moderate or heavy snow showers": <CloudRain className="h-10 w-10 text-primary" />,
+  "Light showers of ice pellets": <CloudRain className="h-10 w-10 text-primary" />,
+  "Moderate or heavy showers of ice pellets": <CloudRain className="h-10 w-10 text-primary" />,
+  "Patchy light rain with thunder": <CloudRain className="h-10 w-10 text-primary" />,
+  "Moderate or heavy rain with thunder": <CloudRain className="h-10 w-10 text-primary" />,
+  "Patchy light snow with thunder": <CloudRain className="h-10 w-10 text-primary" />,
+  "Moderate or heavy snow with thunder": <CloudRain className="h-10 w-10 text-primary" />,
 };
 
 const getAqiInfo = (aqi: number): { variant: BadgeProps["variant"], label: string } => {
-  if (aqi <= 50) return { variant: "default", label: "Good" };
-  if (aqi <= 100) return { variant: "secondary", label: "Moderate" };
+  if (aqi <= 2) return { variant: "default", label: "Good" };
+  if (aqi <= 4) return { variant: "secondary", label: "Moderate" };
   return { variant: "destructive", label: "Unhealthy" };
 };
 
@@ -91,10 +138,17 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
   }
 
   if (!data) {
-    return null;
+    return (
+      <Card className="w-full shadow-lg rounded-xl overflow-hidden bg-card/80 backdrop-blur-sm border-border/20 animate-in fade-in-50 duration-500">
+        <CardHeader className="text-center p-6">
+          <CardTitle className="text-2xl font-bold font-headline">No Data</CardTitle>
+          <CardDescription className="text-lg">Could not retrieve weather data for the selected location.</CardDescription>
+        </CardHeader>
+      </Card>
+    );
   }
   
-  const { location, temperature, condition, humidity, windSpeed, aqi, pollutants, forecast } = data;
+  const { location, temperature, condition, humidity, windSpeed, aqi, pollutants, forecast, isDay } = data;
   const aqiInfo = getAqiInfo(aqi);
 
   const pollutantData = [
@@ -121,6 +175,13 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
     },
   }
 
+  const getWeatherIcon = (condition: string, isDay: boolean) => {
+    if (condition === "Sunny" && !isDay) {
+      return weatherIcons["Clear"];
+    }
+    return weatherIcons[condition] || <Sun className="h-10 w-10 text-secondary-foreground" />;
+  }
+
 
   return (
     <Card className="w-full shadow-lg rounded-xl overflow-hidden bg-card/80 backdrop-blur-sm border-border/20 animate-in fade-in-50 duration-500">
@@ -135,7 +196,7 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
               <span className="text-8xl font-bold">{temperature}</span>
               <span className="text-3xl font-medium mt-2">°C</span>
             </div>
-            {weatherIcons[condition as keyof typeof weatherIcons]}
+            {getWeatherIcon(condition, isDay)}
           </div>
           <div className="flex flex-col gap-4 text-lg">
             <div className="flex items-center justify-between">
@@ -201,7 +262,7 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
             {forecast.map((dayForecast) => (
               <div key={dayForecast.day} className="p-4 rounded-lg bg-muted/50 flex flex-col items-center justify-center gap-2">
                 <p className="text-lg font-bold">{dayForecast.day}</p>
-                {weatherIcons[dayForecast.condition as keyof typeof weatherIcons]}
+                {getWeatherIcon(dayForecast.condition, true)}
                 <p className="text-2xl font-semibold">{dayForecast.temp}°C</p>
               </div>
             ))}

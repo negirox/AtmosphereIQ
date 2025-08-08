@@ -78,8 +78,8 @@ export default function Home() {
   }, [handleLocationSearch]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-12 lg:p-24 bg-background text-foreground">
-      <div className="z-10 w-full max-w-3xl items-center justify-center font-headline text-center">
+    <main className="flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-12 bg-background text-foreground">
+      <div className="z-10 w-full max-w-5xl items-center justify-center font-headline text-center">
         <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-primary-foreground" style={{color: 'hsl(var(--primary-foreground))'}}>AtmosphereIQ</h1>
         <p className="mt-2 text-lg text-muted-foreground">Your real-time air quality and weather guide</p>
       </div>
@@ -88,7 +88,7 @@ export default function Home() {
         <LocationSearch onSearch={handleLocationSearch} onGeolocate={handleGeolocate} isLoading={isLoading} />
       </div>
 
-      <div className="mt-8 w-full max-w-3xl">
+      <div className="mt-8 w-full max-w-5xl">
         <WeatherCard data={weatherData} isLoading={isLoading} />
       </div>
     </main>

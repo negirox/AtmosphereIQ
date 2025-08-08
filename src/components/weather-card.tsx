@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { format } from "date-fns";
+import LocationClock from './location-clock';
 
 export interface WeatherData {
   location: Location
@@ -390,7 +391,8 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
         <CardDescription className="text-sm text-muted-foreground">
           Lat: {location.lat}, Lon: {location.lon} &bull; Timezone: {location.tz_id}
         </CardDescription>
-        <CardDescription className="text-lg">{current.condition.text} &bull; {new Date(location.localtime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</CardDescription>
+        <LocationClock initialTimeEpoch={location.localtime_epoch} />
+        <CardDescription className="text-lg">{current.condition.text}</CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">

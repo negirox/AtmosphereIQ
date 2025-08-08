@@ -1,8 +1,13 @@
-import { Sun, Cloud, CloudRain, Droplets, Wind } from "lucide-react";
+"use client";
+
+import { Sun, Cloud, CloudRain, Droplets, Wind, Leaf, Mountain, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+
 
 export interface WeatherData {
   location: string;
@@ -16,6 +21,11 @@ export interface WeatherData {
     pm10: number;
     no2: number;
   };
+  forecast: {
+    day: string;
+    temp: number;
+    condition: "Sunny" | "Cloudy" | "Rainy";
+  }[];
 }
 
 interface WeatherCardProps {
@@ -24,9 +34,9 @@ interface WeatherCardProps {
 }
 
 const weatherIcons: { [key in WeatherData['condition']]: React.ReactNode } = {
-  Sunny: <Sun className="h-16 w-16 text-secondary-foreground" />,
-  Cloudy: <Cloud className="h-16 w-16 text-muted-foreground" />,
-  Rainy: <CloudRain className="h-16 w-16 text-primary" />,
+  Sunny: <Sun className="h-10 w-10 text-secondary-foreground" />,
+  Cloudy: <Cloud className="h-10 w-10 text-muted-foreground" />,
+  Rainy: <CloudRain className="h-10 w-10 text-primary" />,
 };
 
 const getAqiInfo = (aqi: number): { variant: BadgeProps["variant"], label: string } => {
@@ -84,8 +94,33 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
     return null;
   }
   
-  const { location, temperature, condition, humidity, windSpeed, aqi, pollutants } = data;
+  const { location, temperature, condition, humidity, windSpeed, aqi, pollutants, forecast } = data;
   const aqiInfo = getAqiInfo(aqi);
+
+  const pollutantData = [
+    { name: "PM2.5", value: pollutants.pm25, fill: "hsl(var(--chart-1))", icon: Leaf },
+    { name: "PM10", value: pollutants.pm10, fill: "hsl(var(--chart-2))", icon: Mountain },
+    { name: "NO₂", value: pollutants.no2, fill: "hsl(var(--chart-3))", icon: Sparkles },
+  ];
+  
+  const chartConfig = {
+    value: {
+      label: "µg/m³",
+    },
+    pm25: {
+      label: "PM2.5",
+      color: "hsl(var(--chart-1))",
+    },
+    pm10: {
+      label: "PM10",
+      color: "hsl(var(--chart-2))",
+    },
+    no2: {
+      label: "NO₂",
+      color: "hsl(var(--chart-3))",
+    },
+  }
+
 
   return (
     <Card className="w-full shadow-lg rounded-xl overflow-hidden bg-card/80 backdrop-blur-sm border-border/20 animate-in fade-in-50 duration-500">
@@ -100,7 +135,7 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
               <span className="text-8xl font-bold">{temperature}</span>
               <span className="text-3xl font-medium mt-2">°C</span>
             </div>
-            {weatherIcons[condition]}
+            {weatherIcons[condition as keyof typeof weatherIcons]}
           </div>
           <div className="flex flex-col gap-4 text-lg">
             <div className="flex items-center justify-between">
@@ -120,10 +155,10 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
           </div>
         </div>
         
-        <Separator className="my-8" />
+        <Separator className="my-6" />
 
         <div className="text-center">
-          <h3 className="text-xl font-semibold mb-4 font-headline">Air Quality Index (AQI)</h3>
+          <h3 className="text-xl font-semibold mb-2 font-headline">Air Quality Index (AQI)</h3>
           <div className="flex items-center justify-center gap-4">
             <span className="text-6xl font-bold">{aqi}</span>
             <Badge variant={aqiInfo.variant} className="px-4 py-2 text-base font-semibold">
@@ -132,20 +167,47 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
           </div>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-          <div className="p-4 rounded-lg bg-muted/50">
-            <p className="text-sm text-muted-foreground">PM2.5</p>
-            <p className="text-2xl font-semibold">{pollutants.pm25} <span className="text-sm text-muted-foreground">µg/m³</span></p>
+        <div className="mt-6">
+            <ChartContainer config={chartConfig} className="w-full h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={pollutantData} margin={{ top: 20, right: 20, left: -10, bottom: 5 }} accessibilityLayer>
+                  <CartesianGrid vertical={false} />
+                  <XAxis
+                    dataKey="name"
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    tickFormatter={(value, index) => {
+                      const Icon = pollutantData[index].icon
+                      return value;
+                    }}
+                  />
+                  <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+                   <Tooltip
+                    cursor={false}
+                    content={<ChartTooltipContent indicator="dot" />}
+                  />
+                  <Bar dataKey="value" radius={8} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
           </div>
-          <div className="p-4 rounded-lg bg-muted/50">
-            <p className="text-sm text-muted-foreground">PM10</p>
-            <p className="text-2xl font-semibold">{pollutants.pm10} <span className="text-sm text-muted-foreground">µg/m³</span></p>
-          </div>
-          <div className="p-4 rounded-lg bg-muted/50">
-            <p className="text-sm text-muted-foreground">NO₂</p>
-            <p className="text-2xl font-semibold">{pollutants.no2} <span className="text-sm text-muted-foreground">µg/m³</span></p>
+        
+        <Separator className="my-6" />
+
+        <div>
+          <h3 className="text-xl font-semibold mb-4 text-center font-headline">3-Day Forecast</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+            {forecast.map((dayForecast) => (
+              <div key={dayForecast.day} className="p-4 rounded-lg bg-muted/50 flex flex-col items-center justify-center gap-2">
+                <p className="text-lg font-bold">{dayForecast.day}</p>
+                {weatherIcons[dayForecast.condition as keyof typeof weatherIcons]}
+                <p className="text-2xl font-semibold">{dayForecast.temp}°C</p>
+              </div>
+            ))}
           </div>
         </div>
+
       </CardContent>
     </Card>
   );

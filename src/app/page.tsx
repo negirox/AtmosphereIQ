@@ -18,6 +18,11 @@ const mockWeatherData: { [key: string]: WeatherData } = {
       pm10: 45,
       no2: 30,
     },
+    forecast: [
+      { day: "Mon", temp: 20, condition: "Cloudy" },
+      { day: "Tue", temp: 22, condition: "Sunny" },
+      { day: "Wed", temp: 19, condition: "Rainy" },
+    ],
   },
   "London": {
     location: "London, UK",
@@ -31,6 +36,11 @@ const mockWeatherData: { [key: string]: WeatherData } = {
       pm10: 20,
       no2: 15,
     },
+    forecast: [
+      { day: "Mon", temp: 14, condition: "Rainy" },
+      { day: "Tue", temp: 15, condition: "Cloudy" },
+      { day: "Wed", temp: 13, condition: "Rainy" },
+    ],
   },
   "Tokyo": {
     location: "Tokyo, JP",
@@ -44,6 +54,11 @@ const mockWeatherData: { [key: string]: WeatherData } = {
       pm10: 25,
       no2: 18,
     },
+    forecast: [
+        { day: "Mon", temp: 24, condition: "Sunny" },
+        { day: "Tue", temp: 23, condition: "Sunny" },
+        { day: "Wed", temp: 21, condition: "Cloudy" },
+    ],
   },
   "Current Location": {
     location: "Your Location",
@@ -57,6 +72,11 @@ const mockWeatherData: { [key: string]: WeatherData } = {
         pm10: 14,
         no2: 10,
     },
+    forecast: [
+        { day: "Mon", temp: 26, condition: "Sunny" },
+        { day: "Tue", temp: 27, condition: "Sunny" },
+        { day: "Wed", temp: 25, condition: "Cloudy" },
+    ],
   }
 };
 

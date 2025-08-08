@@ -204,6 +204,15 @@ const weatherIcons: { [key: string]: React.ReactNode } = {
   "Overcast": <Cloud className="h-10 w-10 text-gray-600" />,
   "Mist": <Cloud className="h-10 w-10 text-gray-400" />,
   "Patchy rain possible": <CloudRain className="h-10 w-10 text-blue-400" />,
+  "Patchy light rain": <CloudRain className="h-10 w-10 text-blue-400" />,
+  "Light rain": <CloudRain className="h-10 w-10 text-blue-500" />,
+  "Moderate rain at times": <CloudRain className="h-10 w-10 text-blue-500" />,
+  "Moderate rain": <CloudRain className="h-10 w-10 text-blue-600" />,
+  "Heavy rain at times": <CloudRain className="h-10 w-10 text-blue-600" />,
+  "Heavy rain": <CloudRain className="h-10 w-10 text-blue-700" />,
+  "Light rain shower": <CloudRain className="h-10 w-10 text-blue-400" />,
+  "Moderate or heavy rain shower": <CloudRain className="h-10 w-10 text-blue-500" />,
+  "Torrential rain shower": <CloudRain className="h-10 w-10 text-blue-700" />,
   "Patchy snow possible": <CloudRain className="h-10 w-10 text-blue-300" />,
   "Patchy sleet possible": <CloudRain className="h-10 w-10 text-blue-300" />,
   "Patchy freezing drizzle possible": <CloudRain className="h-10 w-10 text-blue-300" />,
@@ -216,12 +225,6 @@ const weatherIcons: { [key: string]: React.ReactNode } = {
   "Light drizzle": <CloudRain className="h-10 w-10 text-blue-400" />,
   "Freezing drizzle": <CloudRain className="h-10 w-10 text-blue-300" />,
   "Heavy freezing drizzle": <CloudRain className="h-10 w-10 text-blue-300" />,
-  "Patchy light rain": <CloudRain className="h-10 w-10 text-blue-400" />,
-  "Light rain": <CloudRain className="h-10 w-10 text-blue-500" />,
-  "Moderate rain at times": <CloudRain className="h-10 w-10 text-blue-500" />,
-  "Moderate rain": <CloudRain className="h-10 w-10 text-blue-600" />,
-  "Heavy rain at times": <CloudRain className="h-10 w-10 text-blue-600" />,
-  "Heavy rain": <CloudRain className="h-10 w-10 text-blue-700" />,
   "Light freezing rain": <CloudRain className="h-10 w-10 text-blue-300" />,
   "Moderate or heavy freezing rain": <CloudRain className="h-10 w-10 text-blue-300" />,
   "Light sleet": <CloudRain className="h-10 w-10 text-blue-300" />,
@@ -233,9 +236,6 @@ const weatherIcons: { [key: string]: React.ReactNode } = {
   "Patchy heavy snow": <CloudRain className="h-10 w-10 text-white" />,
   "Heavy snow": <CloudRain className="h-10 w-10 text-white" />,
   "Ice pellets": <CloudRain className="h-10 w-10 text-blue-200" />,
-  "Light rain shower": <CloudRain className="h-10 w-10 text-blue-400" />,
-  "Moderate or heavy rain shower": <CloudRain className="h-10 w-10 text-blue-500" />,
-  "Torrential rain shower": <CloudRain className="h-10 w-10 text-blue-700" />,
   "Light sleet showers": <CloudRain className="h-10 w-10 text-blue-300" />,
   "Moderate or heavy sleet showers": <CloudRain className="h-10 w-10 text-blue-300" />,
   "Light snow showers": <CloudRain className="h-10 w-10 text-white" />,
@@ -248,23 +248,25 @@ const weatherIcons: { [key: string]: React.ReactNode } = {
   "Moderate or heavy snow with thunder": <CloudRain className="h-10 w-10 text-yellow-500" />,
 };
 
-const getAqiInfo = (aqi: number): { variant: BadgeProps["variant"], label: string, textColor?: string } => {
-    if (aqi <= 50) return { variant: "default", label: "Good" };
-    if (aqi <= 100) return { variant: "secondary", label: "Moderate" };
-    if (aqi <= 150) return { variant: "destructive", label: "Unhealthy for Sensitive Groups", textColor: "text-orange-500" };
-    if (aqi <= 200) return { variant: "destructive", label: "Unhealthy" };
-    if (aqi <= 300) return { variant: "destructive", label: "Very Unhealthy" };
-    return { variant: "destructive", label: "Hazardous" };
+const getAqiInfo = (index: number): { variant: BadgeProps["variant"], label: string, textColor?: string } => {
+    switch (index) {
+        case 1: return { variant: "default", label: "Good" };
+        case 2: return { variant: "secondary", label: "Moderate" };
+        case 3: return { variant: "destructive", label: "Unhealthy for Sensitive Groups", textColor: "text-orange-500" };
+        case 4: return { variant: "destructive", label: "Unhealthy" };
+        case 5: return { variant: "destructive", label: "Very Unhealthy" };
+        case 6: return { variant: "destructive", label: "Hazardous" };
+        default: return { variant: "default", label: "Unknown" };
+    }
 };
-const getPM25Aqi = (pm25: number): number => {
-    if (pm25 <= 12.0) return Math.round((50/12.0) * pm25);
-    if (pm25 <= 35.4) return Math.round(50 + (49/23.3) * (pm25 - 12.1));
-    if (pm25 <= 55.4) return Math.round(100 + (49/19.9) * (pm25 - 35.5));
-    if (pm25 <= 150.4) return Math.round(150 + (49/94.9) * (pm25 - 55.5));
-    if (pm25 <= 250.4) return Math.round(200 + (99/99.9) * (pm25 - 150.5));
-    if (pm25 <= 500.4) return Math.round(300 + (199/249.9) * (pm25 - 250.5));
-    return 500;
-  };
+
+const getDefraAqiInfo = (index: number): { variant: BadgeProps["variant"], label: string, textColor?: string } => {
+    if (index >= 1 && index <= 3) return { variant: "default", label: "Low" };
+    if (index >= 4 && index <= 6) return { variant: "secondary", label: "Moderate" };
+    if (index >= 7 && index <= 9) return { variant: "destructive", label: "High" };
+    if (index === 10) return { variant: "destructive", label: "Very High" };
+    return { variant: "default", label: "Unknown" };
+};
 
 
 const WeatherCardSkeleton = () => (
@@ -322,8 +324,11 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
   }
   
   const { location, current, forecast } = data;
-  const aqi = getPM25Aqi(current.air_quality.pm2_5);
-  const aqiInfo = getAqiInfo(aqi);
+  const usEpaAqi = current.air_quality["us-epa-index"];
+  const usEpaAqiInfo = getAqiInfo(usEpaAqi);
+  const gbDefraAqi = current.air_quality["gb-defra-index"];
+  const gbDefraAqiInfo = getDefraAqiInfo(gbDefraAqi);
+
 
   const pollutantData = [
     { name: "PM2.5", value: current.air_quality.pm2_5, fill: "hsl(var(--chart-1))" },
@@ -337,6 +342,12 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
   const hourlyData = forecast.forecastday[0].hour.map(h => ({
       time: format(new Date(h.time), "ha"),
       temp: h.temp_c
+  }));
+  
+  const forecastChartData = forecast.forecastday.map(day => ({
+    name: format(new Date(day.date), "EEE"),
+    maxTemp: day.day.maxtemp_c,
+    minTemp: day.day.mintemp_c,
   }));
   
   const chartConfig = {
@@ -354,7 +365,11 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
       color: "hsl(var(--chart-1))",
     },
   }
-
+  
+  const forecastChartConfig = {
+    maxTemp: { label: "Max Temp", color: "hsl(var(--chart-1))" },
+    minTemp: { label: "Min Temp", color: "hsl(var(--chart-2))" },
+  };
 
   const getWeatherIcon = (condition: string, isDay: number) => {
     const conditionText = condition.trim();
@@ -446,16 +461,26 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
         </div>
         <Separator className="my-6" />
 
-
         <div className="text-center">
-          <h3 className="text-xl font-semibold mb-2 font-headline">Air Quality Index (AQI - PM2.5)</h3>
-          <div className="flex items-center justify-center gap-4">
-            <span className={`text-6xl font-bold ${aqiInfo.textColor || ''}`}>{aqi}</span>
-            <Badge variant={aqiInfo.variant} className="px-4 py-2 text-base font-semibold">
-              {aqiInfo.label}
-            </Badge>
-          </div>
+            <h3 className="text-xl font-semibold mb-2 font-headline">Air Quality Index</h3>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <div className="flex items-center gap-2">
+                    <span className="font-bold">US-EPA:</span>
+                    <span className={`text-2xl font-bold ${usEpaAqiInfo.textColor || ''}`}>{usEpaAqi}</span>
+                    <Badge variant={usEpaAqiInfo.variant} className="px-3 py-1 text-sm font-semibold">
+                    {usEpaAqiInfo.label}
+                    </Badge>
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className="font-bold">GB-DEFRA:</span>
+                    <span className={`text-2xl font-bold ${gbDefraAqiInfo.textColor || ''}`}>{gbDefraAqi}</span>
+                    <Badge variant={gbDefraAqiInfo.variant} className="px-3 py-1 text-sm font-semibold">
+                    {gbDefraAqiInfo.label}
+                    </Badge>
+                </div>
+            </div>
         </div>
+
 
         <div className="mt-6">
             <h3 className="text-xl font-semibold mb-2 text-center font-headline">Pollutant Levels</h3>
@@ -519,19 +544,22 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
 
         <Separator className="my-6" />
 
-
         <div>
           <h3 className="text-xl font-semibold mb-4 text-center font-headline">3-Day Forecast</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-            {forecast.forecastday.map((dayForecast) => (
-              <div key={dayForecast.date_epoch} className="p-4 rounded-lg bg-muted/50 flex flex-col items-center justify-center gap-2">
-                <p className="text-lg font-bold">{format(new Date(dayForecast.date), 'EEE')}</p>
-                {getWeatherIcon(dayForecast.day.condition.text, 1)}
-                <p className="text-2xl font-semibold">{Math.round(dayForecast.day.avgtemp_c)}°C</p>
-                <p className="text-sm text-muted-foreground">{dayForecast.day.condition.text}</p>
-              </div>
-            ))}
-          </div>
+           <ChartContainer config={forecastChartConfig} className="w-full h-[200px]">
+              <BarChart data={forecastChartData} accessibilityLayer>
+                <CartesianGrid vertical={false} />
+                <XAxis
+                  dataKey="name"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                />
+                <ChartTooltip content={<ChartTooltipContent indicator="dot" />} />
+                <Bar dataKey="maxTemp" fill="var(--color-maxTemp)" radius={4} />
+                <Bar dataKey="minTemp" fill="var(--color-minTemp)" radius={4} />
+              </BarChart>
+            </ChartContainer>
         </div>
 
       </CardContent>

@@ -96,6 +96,10 @@ export default function Home() {
       <div className="mt-12 w-full max-w-5xl">
         <Faq />
       </div>
+
+      <footer className="mt-12 w-full max-w-5xl text-center text-muted-foreground">
+        <p>&copy; {new Date().getFullYear()} Negirox. All rights reserved.</p>
+      </footer>
     </main>
   );
 }

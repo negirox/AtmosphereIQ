@@ -38,58 +38,50 @@ const WeatherOutputSchema = z.object({
 export type WeatherOutput = z.infer<typeof WeatherOutputSchema>;
 
 
-const fetchWeatherFlow = ai.defineFlow(
-    {
-        name: 'fetchWeatherFlow',
-        inputSchema: WeatherInputSchema,
-        outputSchema: WeatherOutputSchema,
-    },
-    async (input) => {
-        const encodedApiKey = process.env.WEATHER_API_KEY;
-        if (!encodedApiKey) {
-            throw new Error('WEATHER_API_KEY is not set');
-        }
 
-        const apiKey = Buffer.from(encodedApiKey, 'base64').toString('ascii');
-
-        const url = `http://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${input.city}&days=3&aqi=yes`;
-        
-        const response = await fetch(url);
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error(`Weather API error: ${response.statusText}`, errorText);
-            throw new Error(`Failed to fetch weather data: ${response.statusText}`);
-        }
-        const data = await response.json();
-
-        if (!data.forecast || !data.forecast.forecastday) {
-            throw new Error('Invalid data structure from Weather API');
-        }
-
-        const forecast = data.forecast.forecastday.map((day: any) => ({
-            day: format(new Date(day.date), 'EEE'),
-            temp: day.day.avgtemp_c,
-            condition: day.day.condition.text,
-        }));
-
-        return {
-            location: `${data.location.name}, ${data.location.country}`,
-            temperature: data.current.temp_c,
-            condition: data.current.condition.text,
-            isDay: data.current.is_day === 1,
-            humidity: data.current.humidity,
-            windSpeed: data.current.wind_kph,
-            aqi: data.current.air_quality['us-epa-index'],
-            pollutants: {
-                pm25: data.current.air_quality.pm2_5,
-                pm10: data.current.air_quality.pm10,
-                no2: data.current.air_quality.no2,
-            },
-            forecast,
-        };
-    }
-);
 
 export async function fetchWeather(input: WeatherInput): Promise<WeatherOutput> {
-    return fetchWeatherFlow(input);
-}
+    const encodedApiKey = process.env.WEATHER_API_KEY;
+    if (!encodedApiKey) {
+        throw new Error('WEATHER_API_KEY is not set');
+    }
+
+    const apiKey = Buffer.from(encodedApiKey, 'base64').toString('ascii');
+
+    const url = `http://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${input.city}&days=3&aqi=yes`;
+    
+    const response = await fetch(url);
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`Weather API error: ${response.statusText}`, errorText);
+        throw new Error(`Failed to fetch weather data: ${response.statusText}`);
+    }
+    const data = await response.json();
+
+    if (!data.forecast || !data.forecast.forecastday) {
+        throw new Error('Invalid data structure from Weather API');
+    }
+
+    const forecast = data.forecast.forecastday.map((day: any) => ({
+        day: format(new Date(day.date), 'EEE'),
+        temp: day.day.avgtemp_c,
+        condition: day.day.condition.text,
+    }));
+
+    return {
+        location: `${data.location.name}, ${data.location.country}`,
+        temperature: data.current.temp_c,
+        condition: data.current.condition.text,
+        isDay: data.current.is_day === 1,
+        humidity: data.current.humidity,
+        windSpeed: data.current.wind_kph,
+        aqi: data.current.air_quality['us-epa-index'],
+        pollutants: {
+            pm25: data.current.air_quality.pm2_5,
+            pm10: data.current.air_quality.pm10,
+            no2: data.current.air_quality.no2,
+        },
+        forecast,
+    };
+} 
+

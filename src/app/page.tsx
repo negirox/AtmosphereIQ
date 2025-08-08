@@ -18,8 +18,7 @@ export default function Home() {
       if (!apiKey) {
         throw new Error("API key is not configured.");
       }
-      const decodedApiKey = atob(apiKey);
-      const url = `https://api.weatherapi.com/v1/forecast.json?key=${decodedApiKey}&q=${city}&days=3&aqi=yes`;
+      const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${city}&days=3&aqi=yes`;
       
       const response = await fetch(url);
       if (!response.ok) {

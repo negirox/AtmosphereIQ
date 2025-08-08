@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback } from "react";
 import LocationSearch from "@/components/location-search";
 import WeatherCard, { type WeatherData } from "@/components/weather-card";
 import { useToast } from "@/hooks/use-toast";
+import Faq from "@/components/faq";
 
 export default function Home() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -90,6 +91,10 @@ export default function Home() {
 
       <div className="mt-8 w-full max-w-5xl">
         <WeatherCard data={weatherData} isLoading={isLoading} />
+      </div>
+
+      <div className="mt-12 w-full max-w-5xl">
+        <Faq />
       </div>
     </main>
   );

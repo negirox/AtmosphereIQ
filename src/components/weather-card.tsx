@@ -204,6 +204,7 @@ const weatherIcons: { [key: string]: React.ReactNode } = {
   "Overcast": <Cloud className="h-10 w-10 text-gray-600" />,
   "Mist": <Cloud className="h-10 w-10 text-gray-400" />,
   "Patchy rain possible": <CloudRain className="h-10 w-10 text-blue-400" />,
+    "Patchy rain nearby": <CloudRain className="h-10 w-10 text-blue-400" />,
   "Patchy light rain": <CloudRain className="h-10 w-10 text-blue-400" />,
   "Light rain": <CloudRain className="h-10 w-10 text-blue-500" />,
   "Moderate rain at times": <CloudRain className="h-10 w-10 text-blue-500" />,
@@ -385,7 +386,10 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
   return (
     <Card className="w-full shadow-lg rounded-xl overflow-hidden bg-card/80 backdrop-blur-sm border-border/20 animate-in fade-in-50 duration-500">
       <CardHeader className="text-center p-6">
-        <CardTitle className="text-3xl font-bold font-headline">{location.name}, {location.country}</CardTitle>
+        <CardTitle className="text-3xl font-bold font-headline">{location.name}, {location.region}, {location.country}</CardTitle>
+        <CardDescription className="text-sm text-muted-foreground">
+          Lat: {location.lat}, Lon: {location.lon} &bull; Timezone: {location.tz_id}
+        </CardDescription>
         <CardDescription className="text-lg">{current.condition.text} &bull; {new Date(location.localtime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</CardDescription>
       </CardHeader>
       <CardContent className="p-6">

@@ -358,7 +358,7 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
     no2: { label: "NO₂", color: "hsl(var(--chart-3))" },
     o3: { label: "O₃", color: "hsl(var(--chart-4))" },
     so2: { label: "SO₂", color: "hsl(var(--chart-5))" },
-    co: { label: "CO", color: "hsl(var(--muted))" },
+    co: { label: "CO", color: "hsl(var(--accent))" },
   }
    const hourlyChartConfig = {
     temp: {

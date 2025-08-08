@@ -4,7 +4,8 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'AtmosphereIQ',
-  description: 'Real-time air quality and weather information',
+  description: 'Real-time air quality and weather information for your location. Get current conditions, 3-day forecasts, and detailed pollutant data.',
+  keywords: "weather, air quality, forecast, AQI, pollutants, temperature, humidity, wind, PM2.5, PM10, real-time weather",
 };
 
 export default function RootLayout({

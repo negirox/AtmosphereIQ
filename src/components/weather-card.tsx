@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { format } from "date-fns";
 
 export interface WeatherData {
@@ -164,6 +164,7 @@ export interface Hour {
   gust_mph: number
   gust_kph: number
   uv: number
+  air_quality?: AirQuality
 }
 
 export interface Condition3 {
@@ -247,14 +248,24 @@ const weatherIcons: { [key: string]: React.ReactNode } = {
   "Moderate or heavy snow with thunder": <CloudRain className="h-10 w-10 text-yellow-500" />,
 };
 
-const getAqiInfo = (aqi: number): { variant: BadgeProps["variant"], label: string } => {
-  if (aqi <= 1) return { variant: "default", label: "Good" };
-  if (aqi <= 2) return { variant: "secondary", label: "Moderate" };
-  if (aqi <= 3) return { variant: "destructive", label: "Unhealthy for Sensitive Groups" };
-  if (aqi <= 4) return { variant: "destructive", label: "Unhealthy" };
-  if (aqi <= 5) return { variant: "destructive", label: "Very Unhealthy" };
-  return { variant: "destructive", label: "Hazardous" };
+const getAqiInfo = (aqi: number): { variant: BadgeProps["variant"], label: string, textColor?: string } => {
+    if (aqi <= 50) return { variant: "default", label: "Good" };
+    if (aqi <= 100) return { variant: "secondary", label: "Moderate" };
+    if (aqi <= 150) return { variant: "destructive", label: "Unhealthy for Sensitive Groups", textColor: "text-orange-500" };
+    if (aqi <= 200) return { variant: "destructive", label: "Unhealthy" };
+    if (aqi <= 300) return { variant: "destructive", label: "Very Unhealthy" };
+    return { variant: "destructive", label: "Hazardous" };
 };
+const getPM25Aqi = (pm25: number): number => {
+    if (pm25 <= 12.0) return Math.round((50/12.0) * pm25);
+    if (pm25 <= 35.4) return Math.round(50 + (49/23.3) * (pm25 - 12.1));
+    if (pm25 <= 55.4) return Math.round(100 + (49/19.9) * (pm25 - 35.5));
+    if (pm25 <= 150.4) return Math.round(150 + (49/94.9) * (pm25 - 55.5));
+    if (pm25 <= 250.4) return Math.round(200 + (99/99.9) * (pm25 - 150.5));
+    if (pm25 <= 500.4) return Math.round(300 + (199/249.9) * (pm25 - 250.5));
+    return 500;
+  };
+
 
 const WeatherCardSkeleton = () => (
     <Card className="w-full shadow-lg rounded-xl overflow-hidden bg-card/80 backdrop-blur-sm border-border/20">
@@ -311,7 +322,7 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
   }
   
   const { location, current, forecast } = data;
-  const aqi = current.air_quality["us-epa-index"];
+  const aqi = getPM25Aqi(current.air_quality.pm2_5);
   const aqiInfo = getAqiInfo(aqi);
 
   const pollutantData = [
@@ -322,6 +333,11 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
     { name: "SO₂", value: current.air_quality.so2, fill: "hsl(var(--chart-5))" },
     { name: "CO", value: current.air_quality.co, fill: "hsl(var(--muted))" },
   ];
+
+  const hourlyData = forecast.forecastday[0].hour.map(h => ({
+      time: format(new Date(h.time), "ha"),
+      temp: h.temp_c
+  }));
   
   const chartConfig = {
     value: { label: "µg/m³" },
@@ -332,6 +348,13 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
     so2: { label: "SO₂", color: "hsl(var(--chart-5))" },
     co: { label: "CO", color: "hsl(var(--muted))" },
   }
+   const hourlyChartConfig = {
+    temp: {
+      label: "Temp.",
+      color: "hsl(var(--chart-1))",
+    },
+  }
+
 
   const getWeatherIcon = (condition: string, isDay: number) => {
     const conditionText = condition.trim();
@@ -404,11 +427,30 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
         </div>
         
         <Separator className="my-6" />
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+            <div className="flex items-center justify-center gap-2 text-muted-foreground">
+              <Sunrise className="h-6 w-6" />
+              <span>Sunrise:</span>
+              <span className="font-semibold text-foreground">{forecast.forecastday[0].astro.sunrise}</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 text-muted-foreground">
+              <Sunset className="h-6 w-6" />
+              <span>Sunset:</span>
+              <span className="font-semibold text-foreground">{forecast.forecastday[0].astro.sunset}</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                <Moon className="h-6 w-6" />
+                <span>Moon:</span>
+                <span className="font-semibold text-foreground">{forecast.forecastday[0].astro.moon_phase}</span>
+            </div>
+        </div>
+        <Separator className="my-6" />
+
 
         <div className="text-center">
-          <h3 className="text-xl font-semibold mb-2 font-headline">Air Quality Index (AQI)</h3>
+          <h3 className="text-xl font-semibold mb-2 font-headline">Air Quality Index (AQI - PM2.5)</h3>
           <div className="flex items-center justify-center gap-4">
-            <span className="text-6xl font-bold">{aqi}</span>
+            <span className={`text-6xl font-bold ${aqiInfo.textColor || ''}`}>{aqi}</span>
             <Badge variant={aqiInfo.variant} className="px-4 py-2 text-base font-semibold">
               {aqiInfo.label}
             </Badge>
@@ -439,6 +481,44 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
           </div>
         
         <Separator className="my-6" />
+
+        <div>
+           <h3 className="text-xl font-semibold mb-4 text-center font-headline">Hourly Forecast</h3>
+            <ChartContainer config={hourlyChartConfig} className="w-full h-[200px]">
+                <AreaChart
+                    accessibilityLayer
+                    data={hourlyData}
+                    margin={{
+                    left: 12,
+                    right: 12,
+                    }}
+                >
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                    dataKey="time"
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    tickFormatter={(value) => value.slice(0, 3)}
+                    />
+                    <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent indicator="line" />}
+                    />
+                    <Area
+                    dataKey="temp"
+                    type="natural"
+                    fill="var(--color-temp)"
+                    fillOpacity={0.4}
+                    stroke="var(--color-temp)"
+                    stackId="a"
+                    />
+                </AreaChart>
+            </ChartContainer>
+        </div>
+
+        <Separator className="my-6" />
+
 
         <div>
           <h3 className="text-xl font-semibold mb-4 text-center font-headline">3-Day Forecast</h3>

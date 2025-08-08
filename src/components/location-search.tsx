@@ -34,11 +34,11 @@ export default function LocationSearch({ onSearch, onGeolocate, isLoading }: Loc
           aria-label="City Search"
         />
         <Button type="submit" size="icon" disabled={isLoading} aria-label="Search">
-          <Search className="h-4 w-4" />
+          <Search />
         </Button>
       </form>
       <Button variant="outline" onClick={onGeolocate} disabled={isLoading} className="w-full">
-        <MapPin className="mr-2 h-4 w-4" />
+        <MapPin />
         Use My Current Location
       </Button>
     </div>

@@ -15,7 +15,7 @@ export default function Home() {
   const handleLocationSearch = useCallback(async (city: string) => {
     setIsLoading(true);
     try {
-      const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
+      const apiKey = "f520cd345377420e81d193619250808";
       if (!apiKey) {
         throw new Error("API key is not configured.");
       }
@@ -79,7 +79,7 @@ export default function Home() {
   }, [handleLocationSearch]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-12 bg-background text-foreground">
+    <main className="flex min-h-screen flex-col items-center p-4 sm:p-6 md:p-8 bg-background text-foreground">
       <div className="z-10 w-full max-w-5xl items-center justify-center font-headline text-center">
         <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-primary-foreground" style={{color: 'hsl(var(--primary-foreground))'}}>AtmosphereIQ</h1>
         <p className="mt-2 text-lg text-muted-foreground">Your real-time air quality and weather guide</p>

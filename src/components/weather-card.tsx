@@ -332,12 +332,12 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
 
 
   const pollutantData = [
-    { name: "PM2.5", value: current.air_quality.pm2_5, fill: "hsl(var(--chart-1))" },
-    { name: "PM10", value: current.air_quality.pm10, fill: "hsl(var(--chart-2))" },
-    { name: "NO₂", value: current.air_quality.no2, fill: "hsl(var(--chart-3))" },
-    { name: "O₃", value: current.air_quality.o3, fill: "hsl(var(--chart-4))" },
-    { name: "SO₂", value: current.air_quality.so2, fill: "hsl(var(--chart-5))" },
-    { name: "CO", value: current.air_quality.co, fill: "hsl(var(--muted))" },
+    { name: "PM2.5", value: current.air_quality.pm2_5, fill: "var(--color-pm2_5)" },
+    { name: "PM10", value: current.air_quality.pm10, fill: "var(--color-pm10)" },
+    { name: "NO₂", value: current.air_quality.no2, fill: "var(--color-no2)" },
+    { name: "O₃", value: current.air_quality.o3, fill: "var(--color-o3)" },
+    { name: "SO₂", value: current.air_quality.so2, fill: "var(--color-so2)" },
+    { name: "CO", value: current.air_quality.co, fill: "var(--color-co)" },
   ];
 
   const hourlyData = forecast.forecastday[0].hour.map(h => ({

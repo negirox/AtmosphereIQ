@@ -249,24 +249,24 @@ const weatherIcons: { [key: string]: React.ReactNode } = {
   "Moderate or heavy snow with thunder": <CloudRain className="h-10 w-10 text-yellow-500" />,
 };
 
-const getAqiInfo = (index: number): { variant: BadgeProps["variant"], label: string, textColor?: string } => {
+const getAqiInfo = (index: number): { variant: BadgeProps["variant"], label: string, textColorClass: string } => {
     switch (index) {
-        case 1: return { variant: "default", label: "Good" };
-        case 2: return { variant: "secondary", label: "Moderate" };
-        case 3: return { variant: "destructive", label: "Unhealthy for Sensitive Groups", textColor: "text-orange-500" };
-        case 4: return { variant: "destructive", label: "Unhealthy" };
-        case 5: return { variant: "destructive", label: "Very Unhealthy" };
-        case 6: return { variant: "destructive", label: "Hazardous" };
-        default: return { variant: "default", label: "Unknown" };
+        case 1: return { variant: "default", label: "Good", textColorClass: "text-green-500" };
+        case 2: return { variant: "secondary", label: "Moderate", textColorClass: "text-yellow-500" };
+        case 3: return { variant: "destructive", label: "Unhealthy for Sensitive Groups", textColorClass: "text-orange-500" };
+        case 4: return { variant: "destructive", label: "Unhealthy", textColorClass: "text-red-500" };
+        case 5: return { variant: "destructive", label: "Very Unhealthy", textColorClass: "text-purple-500" };
+        case 6: return { variant: "destructive", label: "Hazardous", textColorClass: "text-fuchsia-800" };
+        default: return { variant: "default", label: "Unknown", textColorClass: "" };
     }
 };
 
-const getDefraAqiInfo = (index: number): { variant: BadgeProps["variant"], label: string, textColor?: string } => {
-    if (index >= 1 && index <= 3) return { variant: "default", label: "Low" };
-    if (index >= 4 && index <= 6) return { variant: "secondary", label: "Moderate" };
-    if (index >= 7 && index <= 9) return { variant: "destructive", label: "High" };
-    if (index === 10) return { variant: "destructive", label: "Very High" };
-    return { variant: "default", label: "Unknown" };
+const getDefraAqiInfo = (index: number): { variant: BadgeProps["variant"], label: string, textColorClass: string } => {
+    if (index >= 1 && index <= 3) return { variant: "default", label: "Low", textColorClass: "text-green-500" };
+    if (index >= 4 && index <= 6) return { variant: "secondary", label: "Moderate", textColorClass: "text-yellow-500" };
+    if (index >= 7 && index <= 9) return { variant: "destructive", label: "High", textColorClass: "text-red-500" };
+    if (index === 10) return { variant: "destructive", label: "Very High", textColorClass: "text-purple-500" };
+    return { variant: "default", label: "Unknown", textColorClass: "" };
 };
 
 
@@ -470,14 +470,14 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <div className="flex items-center gap-2">
                     <span className="font-bold">US-EPA:</span>
-                    <span className={`text-2xl font-bold ${usEpaAqiInfo.textColor || ''}`}>{usEpaAqi}</span>
+                    <span className={`text-2xl font-bold ${usEpaAqiInfo.textColorClass}`}>{usEpaAqi}</span>
                     <Badge variant={usEpaAqiInfo.variant} className="px-3 py-1 text-sm font-semibold">
                     {usEpaAqiInfo.label}
                     </Badge>
                 </div>
                 <div className="flex items-center gap-2">
                     <span className="font-bold">GB-DEFRA:</span>
-                    <span className={`text-2xl font-bold ${gbDefraAqiInfo.textColor || ''}`}>{gbDefraAqi}</span>
+                    <span className={`text-2xl font-bold ${gbDefraAqiInfo.textColorClass}`}>{gbDefraAqi}</span>
                     <Badge variant={gbDefraAqiInfo.variant} className="px-3 py-1 text-sm font-semibold">
                     {gbDefraAqiInfo.label}
                     </Badge>

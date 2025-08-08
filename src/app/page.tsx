@@ -47,7 +47,7 @@ export default function Home() {
     }
   }, [toast]);
 
-  const handleGeolocate = () => {
+  const handleGeolocate = useCallback(() => {
     setIsLoading(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -62,6 +62,7 @@ export default function Home() {
             description: "Could not get location. Please grant permission or use search.",
           });
           setIsLoading(false);
+          handleLocationSearch("Lucknow");
         }
       );
     } else {
@@ -71,12 +72,13 @@ export default function Home() {
         description: "Geolocation is not supported by your browser.",
       });
       setIsLoading(false);
+      handleLocationSearch("Lucknow");
     }
-  };
+  }, [handleLocationSearch, toast]);
 
   useEffect(() => {
-    handleLocationSearch("Lucknow");
-  }, [handleLocationSearch]);
+    handleGeolocate();
+  }, [handleGeolocate]);
 
   return (
     <main className="flex min-h-screen flex-col items-center p-4 sm:p-6 md:p-8 bg-background text-foreground">

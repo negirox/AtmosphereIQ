@@ -1,6 +1,6 @@
 "use client";
 
-import { Sun, Cloud, CloudRain, Droplets, Wind, Leaf, Mountain, Sparkles, Cloudy, Moon,CloudyIcon } from "lucide-react";
+import { Sun, Cloud, CloudRain, Droplets, Wind, Leaf, Mountain, Sparkles, Cloudy, Moon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
@@ -33,6 +33,24 @@ interface WeatherCardProps {
   data: WeatherData | null;
   isLoading: boolean;
 }
+
+const CloudyIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+      <path d="M22 10a3 3 0 0 0-3-3h-2.207a5.502 5.502 0 0 0-10.702.5" />
+    </svg>
+  );
 
 const weatherIcons: { [key: string]: React.ReactNode } = {
   "Sunny": <Sun className="h-10 w-10 text-secondary-foreground" />,
@@ -176,8 +194,12 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
   }
 
   const getWeatherIcon = (condition: string, isDay: boolean) => {
+    if (condition === "Clear" && !isDay) {
+        return weatherIcons["Clear"];
+    }
     if (condition === "Sunny" && !isDay) {
-      return weatherIcons["Clear"];
+        // WeatherAPI can return "Sunny" at night
+        return weatherIcons["Clear"];
     }
     return weatherIcons[condition] || <Sun className="h-10 w-10 text-secondary-foreground" />;
   }
@@ -193,7 +215,7 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="flex items-start">
-              <span className="text-8xl font-bold">{temperature}</span>
+              <span className="text-8xl font-bold">{Math.round(temperature)}</span>
               <span className="text-3xl font-medium mt-2">°C</span>
             </div>
             {getWeatherIcon(condition, isDay)}
@@ -243,7 +265,7 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
                       return value;
                     }}
                   />
-                  <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+                  <YAxis tickLine={false} axisLine={false} tickMargin={8} unit="µg/m³" />
                    <Tooltip
                     cursor={false}
                     content={<ChartTooltipContent indicator="dot" />}
@@ -263,7 +285,7 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
               <div key={dayForecast.day} className="p-4 rounded-lg bg-muted/50 flex flex-col items-center justify-center gap-2">
                 <p className="text-lg font-bold">{dayForecast.day}</p>
                 {getWeatherIcon(dayForecast.condition, true)}
-                <p className="text-2xl font-semibold">{dayForecast.temp}°C</p>
+                <p className="text-2xl font-semibold">{Math.round(dayForecast.temp)}°C</p>
               </div>
             ))}
           </div>

@@ -45,18 +45,26 @@ const fetchWeatherFlow = ai.defineFlow(
         outputSchema: WeatherOutputSchema,
     },
     async (input) => {
-        const apiKey = process.env.WEATHER_API_KEY;
-        if (!apiKey) {
+        const encodedApiKey = process.env.WEATHER_API_KEY;
+        if (!encodedApiKey) {
             throw new Error('WEATHER_API_KEY is not set');
         }
+
+        const apiKey = Buffer.from(encodedApiKey, 'base64').toString('ascii');
 
         const url = `http://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${input.city}&days=3&aqi=yes`;
         
         const response = await fetch(url);
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`Weather API error: ${response.statusText}`, errorText);
             throw new Error(`Failed to fetch weather data: ${response.statusText}`);
         }
         const data = await response.json();
+
+        if (!data.forecast || !data.forecast.forecastday) {
+            throw new Error('Invalid data structure from Weather API');
+        }
 
         const forecast = data.forecast.forecastday.map((day: any) => ({
             day: format(new Date(day.date), 'EEE'),

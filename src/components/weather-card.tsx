@@ -8,37 +8,168 @@ import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-
+import { format } from "date-fns";
 
 export interface WeatherData {
-    location: string;
-    localtime: string;
-    temperature: number;
-    condition: string;
-    isDay: boolean;
-    humidity: number;
-    windSpeed: number;
-    wind_dir: string;
-    pressure_mb: number;
-    precip_mm: number;
-    cloud: number;
-    feelslike_c: number;
-    vis_km: number;
-    uv: number;
-    aqi: number;
-    pollutants: {
-      co: number;
-      no2: number;
-      o3: number;
-      so2: number;
-      pm25: number;
-      pm10: number;
-    };
-    forecast: {
-      day: string;
-      temp: number;
-      condition: string;
-    }[];
+  location: Location
+  current: Current
+  forecast: Forecast
+}
+
+export interface Location {
+  name: string
+  region: string
+  country: string
+  lat: number
+  lon: number
+  tz_id: string
+  localtime_epoch: number
+  localtime: string
+}
+
+export interface Current {
+  last_updated_epoch: number
+  last_updated: string
+  temp_c: number
+  temp_f: number
+  is_day: number
+  condition: Condition
+  wind_mph: number
+  wind_kph: number
+  wind_degree: number
+  wind_dir: string
+  pressure_mb: number
+  pressure_in: number
+  precip_mm: number
+  precip_in: number
+  humidity: number
+  cloud: number
+  feelslike_c: number
+  feelslike_f: number
+  windchill_c: number
+  windchill_f: number
+  heatindex_c: number
+  heatindex_f: number
+  dewpoint_c: number
+  dewpoint_f: number
+  vis_km: number
+  vis_miles: number
+  uv: number
+  gust_mph: number
+  gust_kph: number
+  air_quality: AirQuality
+}
+
+export interface Condition {
+  text: string
+  icon: string
+  code: number
+}
+
+export interface AirQuality {
+  co: number
+  no2: number
+  o3: number
+  so2: number
+  pm2_5: number
+  pm10: number
+  "us-epa-index": number
+  "gb-defra-index": number
+}
+
+export interface Forecast {
+  forecastday: Forecastday[]
+}
+
+export interface Forecastday {
+  date: string
+  date_epoch: number
+  day: Day
+  astro: Astro
+  hour: Hour[]
+}
+
+export interface Day {
+  maxtemp_c: number
+  maxtemp_f: number
+  mintemp_c: number
+  mintemp_f: number
+  avgtemp_c: number
+  avgtemp_f: number
+  maxwind_mph: number
+  maxwind_kph: number
+  totalprecip_mm: number
+  totalprecip_in: number
+  totalsnow_cm: number
+  avgvis_km: number
+  avgvis_miles: number
+  avghumidity: number
+  daily_will_it_rain: number
+  daily_chance_of_rain: number
+  daily_will_it_snow: number
+  daily_chance_of_snow: number
+  condition: Condition2
+  uv: number
+}
+
+export interface Condition2 {
+  text: string
+  icon: string
+  code: number
+}
+
+export interface Astro {
+  sunrise: string
+  sunset: string
+  moonrise: string
+  moonset: string
+  moon_phase: string
+  moon_illumination: number
+  is_moon_up: number
+  is_sun_up: number
+}
+
+export interface Hour {
+  time_epoch: number
+  time: string
+  temp_c: number
+  temp_f: number
+  is_day: number
+  condition: Condition3
+  wind_mph: number
+  wind_kph: number
+  wind_degree: number
+  wind_dir: string
+  pressure_mb: number
+  pressure_in: number
+  precip_mm: number
+  precip_in: number
+  snow_cm: number
+  humidity: number
+  cloud: number
+  feelslike_c: number
+  feelslike_f: number
+  windchill_c: number
+  windchill_f: number
+  heatindex_c: number
+  heatindex_f: number
+  dewpoint_c: number
+  dewpoint_f: number
+  will_it_rain: number
+  chance_of_rain: number
+  will_it_snow: number
+  chance_of_snow: number
+  vis_km: number
+  vis_miles: number
+  gust_mph: number
+  gust_kph: number
+  uv: number
+}
+
+export interface Condition3 {
+  text: string
+  icon: string
+  code: number
 }
 
 interface WeatherCardProps {
@@ -179,21 +310,22 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
     );
   }
   
-  const { location, localtime, temperature, condition, humidity, windSpeed, wind_dir, pressure_mb, precip_mm, cloud, feelslike_c, vis_km, uv, aqi, pollutants, forecast, isDay } = data;
+  const { location, current, forecast } = data;
+  const aqi = current.air_quality["us-epa-index"];
   const aqiInfo = getAqiInfo(aqi);
 
   const pollutantData = [
-    { name: "PM2.5", value: pollutants.pm25, fill: "hsl(var(--chart-1))" },
-    { name: "PM10", value: pollutants.pm10, fill: "hsl(var(--chart-2))" },
-    { name: "NO₂", value: pollutants.no2, fill: "hsl(var(--chart-3))" },
-    { name: "O₃", value: pollutants.o3, fill: "hsl(var(--chart-4))" },
-    { name: "SO₂", value: pollutants.so2, fill: "hsl(var(--chart-5))" },
-    { name: "CO", value: pollutants.co, fill: "hsl(var(--muted))" },
+    { name: "PM2.5", value: current.air_quality.pm2_5, fill: "hsl(var(--chart-1))" },
+    { name: "PM10", value: current.air_quality.pm10, fill: "hsl(var(--chart-2))" },
+    { name: "NO₂", value: current.air_quality.no2, fill: "hsl(var(--chart-3))" },
+    { name: "O₃", value: current.air_quality.o3, fill: "hsl(var(--chart-4))" },
+    { name: "SO₂", value: current.air_quality.so2, fill: "hsl(var(--chart-5))" },
+    { name: "CO", value: current.air_quality.co, fill: "hsl(var(--muted))" },
   ];
   
   const chartConfig = {
     value: { label: "µg/m³" },
-    pm25: { label: "PM2.5", color: "hsl(var(--chart-1))" },
+    pm2_5: { label: "PM2.5", color: "hsl(var(--chart-1))" },
     pm10: { label: "PM10", color: "hsl(var(--chart-2))" },
     no2: { label: "NO₂", color: "hsl(var(--chart-3))" },
     o3: { label: "O₃", color: "hsl(var(--chart-4))" },
@@ -201,71 +333,72 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
     co: { label: "CO", color: "hsl(var(--muted))" },
   }
 
-  const getWeatherIcon = (condition: string, isDay: boolean) => {
-    if (condition === "Clear" && !isDay) {
+  const getWeatherIcon = (condition: string, isDay: number) => {
+    const conditionText = condition.trim();
+    if (conditionText === "Clear" && !isDay) {
         return weatherIcons["Clear"];
     }
-    if (condition === "Sunny" && !isDay) {
+    if (conditionText === "Sunny" && !isDay) {
         return weatherIcons["Clear"];
     }
-    return weatherIcons[condition] || <Sun className="h-10 w-10 text-yellow-400" />;
+    return weatherIcons[conditionText] || <Sun className="h-10 w-10 text-yellow-400" />;
   }
 
   return (
     <Card className="w-full shadow-lg rounded-xl overflow-hidden bg-card/80 backdrop-blur-sm border-border/20 animate-in fade-in-50 duration-500">
       <CardHeader className="text-center p-6">
-        <CardTitle className="text-3xl font-bold font-headline">{location}</CardTitle>
-        <CardDescription className="text-lg">{condition} &bull; {new Date(localtime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</CardDescription>
+        <CardTitle className="text-3xl font-bold font-headline">{location.name}, {location.country}</CardTitle>
+        <CardDescription className="text-lg">{current.condition.text} &bull; {new Date(location.localtime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="flex items-start">
-              <span className="text-8xl font-bold">{Math.round(temperature)}</span>
+              <span className="text-8xl font-bold">{Math.round(current.temp_c)}</span>
               <span className="text-3xl font-medium mt-2">°C</span>
             </div>
-            {getWeatherIcon(condition, isDay)}
+            {getWeatherIcon(current.condition.text, current.is_day)}
           </div>
           <div className="grid grid-cols-2 gap-x-6 gap-y-4 text-md">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Thermometer className="h-5 w-5" />
                 <span>Feels like</span>
-                <span className="font-semibold text-foreground">{Math.round(feelslike_c)}°C</span>
+                <span className="font-semibold text-foreground">{Math.round(current.feelslike_c)}°C</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Droplets className="h-5 w-5" />
                 <span>Humidity</span>
-                <span className="font-semibold text-foreground">{humidity}%</span>
+                <span className="font-semibold text-foreground">{current.humidity}%</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Wind className="h-5 w-5" />
                 <span>Wind</span>
-                <span className="font-semibold text-foreground">{windSpeed} km/h</span>
+                <span className="font-semibold text-foreground">{current.wind_kph} km/h</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Compass className="h-5 w-5" />
                 <span>Direction</span>
-                <span className="font-semibold text-foreground">{wind_dir}</span>
+                <span className="font-semibold text-foreground">{current.wind_dir}</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Gauge className="h-5 w-5" />
                 <span>Pressure</span>
-                <span className="font-semibold text-foreground">{pressure_mb} mb</span>
+                <span className="font-semibold text-foreground">{current.pressure_mb} mb</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <CloudRain className="h-5 w-5" />
                 <span>Precip.</span>
-                <span className="font-semibold text-foreground">{precip_mm} mm</span>
+                <span className="font-semibold text-foreground">{current.precip_mm} mm</span>
               </div>
                <div className="flex items-center gap-2 text-muted-foreground">
                 <Eye className="h-5 w-5" />
                 <span>Visibility</span>
-                <span className="font-semibold text-foreground">{vis_km} km</span>
+                <span className="font-semibold text-foreground">{current.vis_km} km</span>
               </div>
                <div className="flex items-center gap-2 text-muted-foreground">
                 <Sun className="h-5 w-5" />
                 <span>UV Index</span>
-                <span className="font-semibold text-foreground">{uv}</span>
+                <span className="font-semibold text-foreground">{current.uv}</span>
               </div>
           </div>
         </div>
@@ -310,12 +443,12 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
         <div>
           <h3 className="text-xl font-semibold mb-4 text-center font-headline">3-Day Forecast</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-            {forecast.map((dayForecast) => (
-              <div key={dayForecast.day} className="p-4 rounded-lg bg-muted/50 flex flex-col items-center justify-center gap-2">
-                <p className="text-lg font-bold">{dayForecast.day}</p>
-                {getWeatherIcon(dayForecast.condition, true)}
-                <p className="text-2xl font-semibold">{Math.round(dayForecast.temp)}°C</p>
-                <p className="text-sm text-muted-foreground">{dayForecast.condition}</p>
+            {forecast.forecastday.map((dayForecast) => (
+              <div key={dayForecast.date_epoch} className="p-4 rounded-lg bg-muted/50 flex flex-col items-center justify-center gap-2">
+                <p className="text-lg font-bold">{format(new Date(dayForecast.date), 'EEE')}</p>
+                {getWeatherIcon(dayForecast.day.condition.text, 1)}
+                <p className="text-2xl font-semibold">{Math.round(dayForecast.day.avgtemp_c)}°C</p>
+                <p className="text-sm text-muted-foreground">{dayForecast.day.condition.text}</p>
               </div>
             ))}
           </div>

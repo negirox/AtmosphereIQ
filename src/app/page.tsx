@@ -5,7 +5,6 @@ import { useState, useEffect, useCallback } from "react";
 import LocationSearch from "@/components/location-search";
 import WeatherCard, { type WeatherData } from "@/components/weather-card";
 import { useToast } from "@/hooks/use-toast";
-import { format } from "date-fns";
 
 export default function Home() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -25,44 +24,13 @@ export default function Home() {
       if (!response.ok) {
         throw new Error(`Failed to fetch weather data: ${response.statusText}`);
       }
-      const data = await response.json();
+      const data: WeatherData = await response.json();
 
       if (!data.forecast || !data.forecast.forecastday) {
         throw new Error('Invalid data structure from Weather API');
       }
 
-      const forecast = data.forecast.forecastday.map((day: any) => ({
-        day: format(new Date(day.date), 'EEE'),
-        temp: day.day.avgtemp_c,
-        condition: day.day.condition.text,
-      }));
-
-      setWeatherData({
-        location: `${data.location.name}, ${data.location.country}`,
-        localtime: data.location.localtime,
-        temperature: data.current.temp_c,
-        condition: data.current.condition.text,
-        isDay: data.current.is_day === 1,
-        humidity: data.current.humidity,
-        windSpeed: data.current.wind_kph,
-        wind_dir: data.current.wind_dir,
-        pressure_mb: data.current.pressure_mb,
-        precip_mm: data.current.precip_mm,
-        cloud: data.current.cloud,
-        feelslike_c: data.current.feelslike_c,
-        vis_km: data.current.vis_km,
-        uv: data.current.uv,
-        aqi: data.current.air_quality['us-epa-index'],
-        pollutants: {
-          pm25: data.current.air_quality.pm2_5,
-          pm10: data.current.air_quality.pm10,
-          no2: data.current.air_quality.no2,
-          co: data.current.air_quality.co,
-          o3: data.current.air_quality.o3,
-          so2: data.current.air_quality.so2,
-        },
-        forecast,
-      });
+      setWeatherData(data);
 
     } catch (error) {
       console.error(error);
@@ -106,7 +74,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    handleLocationSearch("New York");
+    handleLocationSearch("Lucknow");
   }, [handleLocationSearch]);
 
   return (

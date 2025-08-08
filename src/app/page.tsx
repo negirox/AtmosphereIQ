@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -38,16 +39,27 @@ export default function Home() {
 
       setWeatherData({
         location: `${data.location.name}, ${data.location.country}`,
+        localtime: data.location.localtime,
         temperature: data.current.temp_c,
         condition: data.current.condition.text,
         isDay: data.current.is_day === 1,
         humidity: data.current.humidity,
         windSpeed: data.current.wind_kph,
+        wind_dir: data.current.wind_dir,
+        pressure_mb: data.current.pressure_mb,
+        precip_mm: data.current.precip_mm,
+        cloud: data.current.cloud,
+        feelslike_c: data.current.feelslike_c,
+        vis_km: data.current.vis_km,
+        uv: data.current.uv,
         aqi: data.current.air_quality['us-epa-index'],
         pollutants: {
           pm25: data.current.air_quality.pm2_5,
           pm10: data.current.air_quality.pm10,
           no2: data.current.air_quality.no2,
+          co: data.current.air_quality.co,
+          o3: data.current.air_quality.o3,
+          so2: data.current.air_quality.so2,
         },
         forecast,
       });

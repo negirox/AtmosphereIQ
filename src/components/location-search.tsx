@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, type FormEvent } from "react";
@@ -23,7 +24,7 @@ export default function LocationSearch({ onSearch, onGeolocate, isLoading }: Loc
 
   return (
     <div className="flex flex-col gap-4">
-      <form onSubmit={handleSearch} className="flex w-full items-center space-x-2">
+      <form onSubmit={handleSearch} className="flex w-full flex-wrap sm:flex-nowrap items-center gap-2">
         <Input
           type="text"
           placeholder="Search by city..."
@@ -33,7 +34,7 @@ export default function LocationSearch({ onSearch, onGeolocate, isLoading }: Loc
           className="flex-grow bg-card text-card-foreground border-border focus:ring-primary"
           aria-label="City Search"
         />
-        <Button type="submit" size="icon" disabled={isLoading} aria-label="Search">
+        <Button type="submit" size="icon" disabled={isLoading} aria-label="Search" className="w-full sm:w-auto">
           <Search />
         </Button>
       </form>

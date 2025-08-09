@@ -81,7 +81,22 @@ export default function Home() {
   }, [handleGeolocate]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-4 sm:p-6 md:p-8 bg-background text-foreground">
+    <main className="relative flex min-h-screen flex-col items-center p-4 sm:p-6 md:p-8 bg-background text-foreground">
+      <div className="absolute top-4 right-4 z-20">
+          <ins className="adsbygoogle"
+              style={{ display: "block", width: "120px", height: "240px" }}
+              data-ad-client="ca-pub-9187440931404634"
+              data-ad-slot="1234567890"
+              data-ad-format="auto"
+              data-full-width-responsive="false"></ins>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                (adsbygoogle = window.adsbygoogle || []).push({});
+              `,
+            }}
+          />
+        </div>
       <div className="z-10 w-full max-w-5xl items-center justify-center font-headline text-center">
         <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-primary-foreground" style={{color: 'hsl(var(--primary-foreground))'}}>AtmosphereIQ</h1>
         <p className="mt-2 text-lg text-muted-foreground">Your real-time air quality and weather guide</p>
@@ -93,22 +108,6 @@ export default function Home() {
 
       <div className="mt-8 w-full max-w-5xl">
         <WeatherCard data={weatherData} isLoading={isLoading} />
-      </div>
-
-      <div className="my-8 w-full max-w-5xl">
-        <ins className="adsbygoogle"
-            style={{ display: "block" }}
-            data-ad-client="ca-pub-9187440931404634"
-            data-ad-slot="1234567890"
-            data-ad-format="auto"
-            data-full-width-responsive="true"></ins>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (adsbygoogle = window.adsbygoogle || []).push({});
-            `,
-          }}
-        />
       </div>
 
       <div className="mt-12 w-full max-w-5xl">

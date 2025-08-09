@@ -3,7 +3,12 @@
 
 import { useEffect, useState } from 'react';
 
-export default function AdSenseUnit() {
+interface AdSenseUnitProps {
+  adSlot: string;
+  autoMode:string;
+}
+
+export default function AdSenseUnit({ adSlot,autoMode }: AdSenseUnitProps) {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -30,8 +35,8 @@ export default function AdSenseUnit() {
         className="adsbygoogle"
         style={{ display: 'block', width: '120px', height: '240px' }}
         data-ad-client="ca-pub-9187440931404634"
-        data-ad-slot="1234567890"
-        data-ad-format="auto"
+        data-ad-slot={adSlot}
+        data-ad-format={autoMode}
         data-full-width-responsive="false"
       ></ins>
     </div>

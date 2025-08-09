@@ -21,7 +21,7 @@ export default function Home() {
         throw new Error("API key is not configured.");
       }
       const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${city}&days=3&aqi=yes`;
-      
+
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`Failed to fetch weather data: ${response.statusText}`);
@@ -83,12 +83,15 @@ export default function Home() {
 
   return (
     <main className="relative flex min-h-screen flex-col items-center p-4 sm:p-6 md:p-8 bg-background text-foreground">
-      <AdSenseUnit />
+      <AdSenseUnit adSlot={"5342210952"} autoMode={"auto"} />
       <div className="z-10 w-full max-w-5xl items-center justify-center font-headline text-center">
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-primary-foreground" style={{color: 'hsl(var(--primary-foreground))'}}>AtmosphereIQ</h1>
+        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-primary-foreground" style={{ color: 'hsl(var(--primary-foreground))' }}>AtmosphereIQ</h1>
         <p className="mt-2 text-lg text-muted-foreground">Your real-time air quality and weather guide</p>
       </div>
-      
+      <div className="w-full max-w-md mt-8">
+        <AdSenseUnit adSlot={"9089081944"} autoMode={"autorelaxed"}/>
+      </div>
+
       <div className="w-full max-w-md mt-8">
         <LocationSearch onSearch={handleLocationSearch} onGeolocate={handleGeolocate} isLoading={isLoading} />
       </div>

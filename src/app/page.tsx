@@ -95,6 +95,22 @@ export default function Home() {
         <WeatherCard data={weatherData} isLoading={isLoading} />
       </div>
 
+      <div className="my-8 w-full max-w-5xl">
+        <ins className="adsbygoogle"
+            style={{ display: "block" }}
+            data-ad-client="ca-pub-9187440931404634"
+            data-ad-slot="1234567890"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (adsbygoogle = window.adsbygoogle || []).push({});
+            `,
+          }}
+        />
+      </div>
+
       <div className="mt-12 w-full max-w-5xl">
         <Faq />
       </div>

@@ -64,7 +64,7 @@ export default function Home() {
             description: "Could not get location. Please grant permission or use search.",
           });
           setIsLoading(false);
-          handleLocationSearch("Lucknow");
+          handleLocationSearch("New York");
         }
       );
     } else {
@@ -74,7 +74,7 @@ export default function Home() {
         description: "Geolocation is not supported by your browser.",
       });
       setIsLoading(false);
-      handleLocationSearch("Lucknow");
+      handleLocationSearch("New York");
     }
   }, [handleLocationSearch, toast]);
 

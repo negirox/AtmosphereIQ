@@ -7,6 +7,7 @@ import WeatherCard, { type WeatherData } from "@/components/weather-card";
 import { useToast } from "@/hooks/use-toast";
 import Faq from "@/components/faq";
 import AdSenseUnit from "@/components/adsense-unit";
+import Link from "next/link";
 
 export default function Home() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -104,7 +105,12 @@ export default function Home() {
         <Faq />
       </div>
 
-      <footer className="mt-12 w-full max-w-5xl text-center text-muted-foreground">
+      <footer className="mt-12 w-full max-w-5xl text-center text-muted-foreground border-t border-border/20 pt-8">
+         <div className="flex justify-center gap-4 mb-4">
+            <Link href="/about" className="hover:text-primary hover:underline">About</Link>
+            <Link href="/contact" className="hover:text-primary hover:underline">Contact</Link>
+            <Link href="/privacy-policy" className="hover:text-primary hover:underline">Privacy Policy</Link>
+        </div>
         <p>&copy; {new Date().getFullYear()} Negirox. All rights reserved.</p>
       </footer>
     </main>

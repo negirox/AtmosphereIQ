@@ -81,7 +81,6 @@ export default function Home() {
   useEffect(() => {
     handleGeolocate();
   }, [handleGeolocate]);
-
   return (
     <main className="relative flex min-h-screen flex-col items-center p-4 sm:p-6 md:p-8 bg-background text-foreground">
       <AdSenseUnit adSlot={"5342210952"} autoMode={"auto"} />

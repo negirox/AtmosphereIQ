@@ -387,7 +387,7 @@ export default function WeatherCard({ data, isLoading }: WeatherCardProps) {
   return (
     <Card className="w-full shadow-lg rounded-xl overflow-hidden bg-card/80 backdrop-blur-sm border-border/20 animate-in fade-in-50 duration-500">
       <CardHeader className="text-center p-6">
-        <CardTitle className="text-3xl font-bold font-headline">{location.name}, {location.region}, {location.country}</CardTitle>
+        <CardTitle className="text-3xl font-bold font-headline">{location.name}{location.region && location.name !== location.region ? `, ${location.region}` : ''}, {location.country}</CardTitle>
         <CardDescription className="text-sm text-muted-foreground">
           Lat: {location.lat}, Lon: {location.lon} &bull; Timezone: {location.tz_id}
         </CardDescription>

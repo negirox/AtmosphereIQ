@@ -38,6 +38,9 @@ export default function RootLayout({
     </script>
       </head>
       <body className="font-body antialiased">
+        <amp-auto-ads type="adsense"
+            data-ad-client="ca-pub-9187440931404634">
+        </amp-auto-ads>
         {children}
         <Toaster />
       </body>

@@ -108,7 +108,6 @@ export default function Home() {
       <footer className="mt-12 w-full max-w-5xl text-center text-muted-foreground border-t border-border/20 pt-8">
          <div className="flex justify-center gap-4 mb-4">
             <Link href="/about" className="hover:text-primary hover:underline">About</Link>
-            <Link href="/contact" className="hover:text-primary hover:underline">Contact</Link>
             <Link href="/privacy-policy" className="hover:text-primary hover:underline">Privacy Policy</Link>
         </div>
         <p>&copy; {new Date().getFullYear()} Negirox. All rights reserved.</p>

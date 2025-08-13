@@ -24,7 +24,7 @@ export default function RootLayout({
         <meta property="og:title" content="Real-Time Weather & Air Quality Tracker" />
         <meta property="og:description" content="Track weather and air pollution levels instantly." />
         <meta property="og:type" content="website" />
-
+        <meta name="google-site-verification" content="Ho2zcxC6OxfZE7x7sKnI0PfZHMuQpwYWvmnmjAdcUqg" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Live Weather & Air Quality Dashboard" />
         <meta name="twitter:description" content="See local AQI, temperature, and pollution levels." />
@@ -32,14 +32,14 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9187440931404634"
-     crossOrigin="anonymous"></script>
+          crossOrigin="anonymous"></script>
         <script async custom-element="amp-auto-ads"
-        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
-    </script>
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+        </script>
       </head>
       <body className="font-body antialiased">
         <amp-auto-ads type="adsense"
-            data-ad-client="ca-pub-9187440931404634">
+          data-ad-client="ca-pub-9187440931404634">
         </amp-auto-ads>
         {children}
         <Toaster />

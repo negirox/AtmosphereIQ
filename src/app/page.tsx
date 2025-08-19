@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import Faq from "@/components/faq";
 import AdSenseUnit from "@/components/adsense-unit";
 import Link from "next/link";
+import { Github } from "lucide-react";
 
 export default function Home() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -105,9 +106,12 @@ export default function Home() {
       </div>
 
       <footer className="mt-12 w-full max-w-5xl text-center text-muted-foreground border-t border-border/20 pt-8">
-         <div className="flex justify-center gap-4 mb-4">
+         <div className="flex justify-center items-center gap-4 mb-4">
             <Link href="/about" className="hover:text-primary hover:underline">About</Link>
             <Link href="/privacy-policy" className="hover:text-primary hover:underline">Privacy Policy</Link>
+            <a href="https://github.com/negirox" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline flex items-center gap-1">
+                <Github size={16} /> GitHub
+            </a>
         </div>
         <p>&copy; {new Date().getFullYear()} Negirox. All rights reserved.</p>
       </footer>

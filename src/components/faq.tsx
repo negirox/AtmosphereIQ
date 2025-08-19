@@ -30,6 +30,11 @@ const faqs = [
     answer:
       "PM2.5 refers to fine particulate matter with a diameter of 2.5 micrometers or less. These tiny particles can penetrate deep into the lungs and even enter the bloodstream. Long-term exposure to PM2.5 can lead to respiratory and cardiovascular problems, including asthma, heart attacks, and reduced lung function. It is one of the most dangerous air pollutants.",
   },
+   {
+    question: "Where can I find more weather resources?",
+    answer:
+      (<span>While AtmosphereIQ provides essential data, you can explore more in-depth forecasts and meteorological information on these trusted sites: <a href="https://www.accuweather.com/" target="_blank" rel="noopener noreferrer" className="text-primary underline">AccuWeather</a>, <a href="https://www.weather.com/" target="_blank" rel="noopener noreferrer" className="text-primary underline">The Weather Channel</a>, and <a href="https://www.wunderground.com/" target="_blank" rel="noopener noreferrer" className="text-primary underline">Weather Underground</a>.</span>)
+  },
 ];
 
 export default function Faq() {
